@@ -1,11 +1,13 @@
 import io
-import os
 from fastapi.testclient import TestClient
 from app.main import app
 
 def test_multi_upload(monkeypatch):
     from app import main as m
+
+    # avoid hitting Anthropic and PDF parser
     monkeypatch.setattr(m, "call_claude", lambda t: {"title":"T","summary":"S","tags":["x"],"tokens_used":1})
+    monkeypatch.setattr(m, "extract_text_from_pdf", lambda b: "dummy text")
 
     client = TestClient(app)
     files = [

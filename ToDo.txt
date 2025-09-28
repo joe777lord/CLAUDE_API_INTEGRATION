@@ -2,3 +2,7 @@ poetry
 backend/frontend Dockerfile
 git action
 backend/frontend unit test/integration test
+
+shorten poetry command
+complete dockerization both in backend and frontend
+fix test failures
