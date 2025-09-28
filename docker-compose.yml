@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./backend/Dockerfile
+    env_file:
+      - ./backend/.env         # contains ANTHROPIC_API_KEY=sk-ant-...
+    environment:
+      # Let .env override any host env:
+      - PYTHONPATH=/app
+    volumes:
+      - ./backend/app:/app/app  # hot reload
+    ports:
+      - "8000:8000"
+    networks: [appnet]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./frontend/Dockerfile
+    environment:
+      # Point the browser to the backend container name
+      - VITE_API_BASE=http://localhost:8000
+      # NOTE: Because the browser runs on your host, use localhost:8000 here (not backend:8000).
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks: [appnet]
+
+networks:
+  appnet: {}
